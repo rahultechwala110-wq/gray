@@ -43,7 +43,7 @@ export default function CollectionsGrid() {
   const [videoKey, setVideoKey] = useState<string>('');
 
   useEffect(() => {
-    fetch('/api/collections', { cache: 'no-store' })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/collections.php`, { cache: 'no-store' })
       .then(r => r.json())
       .then(({ hero: h, products: p }) => {
         if (h) {

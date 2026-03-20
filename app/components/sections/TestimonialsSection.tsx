@@ -25,7 +25,7 @@ export default function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackTestimonials);
 
   useEffect(() => {
-    fetch('/api/testimonials', { cache: 'no-store' })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/testimonials.php`, { cache: 'no-store' })
       .then(r => r.json())
       .then((data: Testimonial[]) => {
         if (data?.length) setTestimonials(data);

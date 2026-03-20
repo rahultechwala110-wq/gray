@@ -209,7 +209,7 @@ export default function FeaturedProduct() {
   const [index, setIndex]       = useState(0);
 
   useEffect(() => {
-    fetch('/api/featured-product', { cache: 'no-store' })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/featured-product.php`, { cache: 'no-store' })
       .then(r => r.json())
       .then((data: FeaturedProductData[]) => {
         if (data?.length) {

@@ -28,7 +28,7 @@ export default function ParallaxVideo() {
   const [videoKey, setVideoKey] = useState('init');
 
   useEffect(() => {
-    fetch('/api/parallax-video', { cache: 'no-store' })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/parallax-video.php`, { cache: 'no-store' })
       .then(r => r.json())
       .then((d: ParallaxVideoData) => {
         if (d) {

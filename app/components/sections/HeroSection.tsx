@@ -21,7 +21,7 @@ export default function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    fetch('/api/hero')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/hero.php`)
       .then(r => r.json())
       .then(data => {
         setHero(data);

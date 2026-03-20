@@ -29,7 +29,7 @@ export default function PhilosophySection() {
   const [data, setData] = useState<AboutHomeData>(defaultData);
 
   useEffect(() => {
-    fetch('/api/about-home')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/about-home.php`)
       .then(r => r.json())
       .then(d => setData(d))
       .catch(() => {});

@@ -63,7 +63,7 @@ export default function FeaturedFragrances() {
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
-    fetch('/api/fragrances')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fragrances.php`)
       .then(r => r.json())
       .then(({ categories: cats, products }) => {
         if (cats?.length) setCategories(cats);

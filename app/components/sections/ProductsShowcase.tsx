@@ -63,7 +63,7 @@ export default function ProductsShowcase() {
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    fetch('/api/showcase', { cache: 'no-store' })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/showcase.php`, { cache: 'no-store' })
       .then(r => r.json())
       .then(({ settings: s, products: p }) => {
         if (s) setSettings(s);

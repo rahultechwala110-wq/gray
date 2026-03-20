@@ -38,13 +38,13 @@ export default function ReelSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
 
  useEffect(() => {
-  fetch("/api/reels")
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reels.php`)
     .then((r) => r.json())
     .then((res) => {
       if (res.success && res.data.length > 0) {
         setReels(res.data.map((r: Reel) => ({
           ...r,
-          video: r.video || '',  // route.ts থেকে already full URL আসছে
+          video: r.video || '',
         })));
       } else {
         setReels(FALLBACK_REELS);

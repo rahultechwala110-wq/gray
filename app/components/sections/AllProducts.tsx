@@ -82,7 +82,7 @@ export default function Products() {
   }, [searchParams]);
 
   useEffect(() => {
-    fetch('/api/showcase')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/showcase.php`)
       .then(r => r.json())
       .then(({ products: prods }) => {
         if (prods?.length) {

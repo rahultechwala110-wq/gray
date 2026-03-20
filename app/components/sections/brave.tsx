@@ -244,7 +244,7 @@ export default function ProductPage() {
     if (!slug) { setPageLoading(false); return; }
 
     setPageLoading(true);
-    fetch(`/api/product?slug=${encodeURIComponent(slug)}`, { cache: 'no-store' })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/product.php?slug=${encodeURIComponent(slug)}`, { cache: 'no-store' })
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(d => { if (d) setProduct(d); })
       .catch(err => console.error('Failed to fetch product:', err))
@@ -497,7 +497,7 @@ function ProductsShowcase() {
 
   // ✅ Fetch from /api/showcase
   useEffect(() => {
-    fetch('/api/showcase', { cache: 'no-store' })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/showcase.php`, { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then(d => {
         if (d?.settings) setSettings(d.settings);

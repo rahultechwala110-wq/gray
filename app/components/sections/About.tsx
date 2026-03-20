@@ -26,7 +26,7 @@ export default function About() {
   const [data, setData] = useState<AboutData>(fallback);
 
   useEffect(() => {
-    fetch('/api/about', { cache: 'no-store' })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/about.php`, { cache: 'no-store' })
       .then(r => r.json())
       .then((d: AboutData) => {
         if (d?.heading) setData(d);

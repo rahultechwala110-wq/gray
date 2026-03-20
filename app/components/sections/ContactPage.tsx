@@ -47,7 +47,7 @@ export default function ContactPage() {
   const [settings, setSettings]   = useState<Settings>(DEFAULTS);
 
   useEffect(() => {
-    fetch('/api/contact')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact.php`)
       .then(r => r.json())
       .then(({ settings: s }) => {
         if (s) {
@@ -76,7 +76,7 @@ export default function ContactPage() {
     if (!form.name || !form.email || !form.message) return;
     setSending(true);
     try {
-      await fetch('/api/contact', {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact.php`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(form),
