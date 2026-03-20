@@ -12,10 +12,9 @@ const nextConfig = {
         hostname: "lh3.googleusercontent.com",
       },
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "80",
-        pathname: "/gray/admin/uploads/**",
+        protocol: "https",
+        hostname: "https://gray.ninjamarketing360.com/",
+        pathname: "/admin/uploads/**",
       },
     ],
   },
