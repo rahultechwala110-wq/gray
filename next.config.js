@@ -13,7 +13,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "https://gray.ninjamarketing360.com/",
+        hostname: "gray.ninjamarketing360.com",
         pathname: "/admin/uploads/**",
       },
     ],
