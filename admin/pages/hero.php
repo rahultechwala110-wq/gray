@@ -4,7 +4,6 @@ requireLogin();
 
 $conn->query("ALTER TABLE hero_section ADD COLUMN IF NOT EXISTS video_file VARCHAR(300) DEFAULT ''");
 $conn->query("ALTER TABLE hero_section ADD COLUMN IF NOT EXISTS overlay_opacity DECIMAL(3,2) DEFAULT 0.50");
-$conn->query("ALTER TABLE hero_section ADD COLUMN IF NOT EXISTS default_muted TINYINT(1) DEFAULT 1");
 $conn->query("ALTER TABLE hero_section ADD COLUMN IF NOT EXISTS show_sound_btn TINYINT(1) DEFAULT 1");
 $conn->query("ALTER TABLE hero_section ADD COLUMN IF NOT EXISTS top_gradient TINYINT(1) DEFAULT 1");
 $conn->query("ALTER TABLE hero_section ADD COLUMN IF NOT EXISTS bottom_gradient TINYINT(1) DEFAULT 1");
@@ -29,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('hero');
         }
 
-        $upload_dir = UPLOAD_PATH . 'hero-section/';
+        $upload_dir = ADMIN_UPLOAD_PATH . 'hero-section/';
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
 
         $filename = 'banner.' . $ext;
@@ -42,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $overlay_opacity = number_format(min(1, max(0, floatval($_POST['overlay_opacity'] ?? 0.5))), 2);
-    $default_muted   = isset($_POST['default_muted'])   ? 1 : 0;
     $show_sound_btn  = isset($_POST['show_sound_btn'])  ? 1 : 0;
     $top_gradient    = isset($_POST['top_gradient'])    ? 1 : 0;
     $bottom_gradient = isset($_POST['bottom_gradient']) ? 1 : 0;
@@ -50,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $conn->query("UPDATE hero_section SET
         video_file='$vf', overlay_opacity=$overlay_opacity,
-        default_muted=$default_muted, show_sound_btn=$show_sound_btn,
+        show_sound_btn=$show_sound_btn,
         top_gradient=$top_gradient, bottom_gradient=$bottom_gradient
         WHERE id=1");
 
@@ -60,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once '../includes/header.php';
 
-$video_path = UPLOAD_PATH . 'hero-section/banner.mp4';
-$video_url  = UPLOAD_URL  . 'hero-section/banner.mp4';
+$video_path = ADMIN_UPLOAD_PATH . 'hero-section/banner.mp4';
+$video_url  = UPLOAD_URL . 'hero-section/banner.mp4';
 $has_video  = file_exists($video_path);
 ?>
 
@@ -79,12 +77,11 @@ $has_video  = file_exists($video_path);
 
 <form method="POST" enctype="multipart/form-data">
 
-<!-- ════════════ VIDEO UPLOAD ════════════ -->
 <div class="card" style="margin-bottom:20px">
     <div class="card-header">
         <div class="card-title"><i class="fas fa-video"></i> Background Video</div>
         <span style="font-size:0.75rem;color:var(--text-light);background:var(--cream-dark);padding:4px 10px;border-radius:20px">
-            <i class="fas fa-folder"></i> saves as: /public/hero-section/banner.mp4
+            <i class="fas fa-folder"></i> saves as: admin/uploads/hero-section/banner.mp4
         </span>
     </div>
 
@@ -145,7 +142,6 @@ $has_video  = file_exists($video_path);
     </div>
 </div>
 
-<!-- ════════════ VIDEO SETTINGS ════════════ -->
 <div class="card" style="margin-bottom:20px">
     <div class="card-header">
         <div class="card-title"><i class="fas fa-sliders-h"></i> Video & Overlay Settings</div>
@@ -172,21 +168,6 @@ $has_video  = file_exists($video_path);
     </div>
 
     <div class="form-row" style="gap:16px">
-        <div class="form-group" style="background:var(--cream);border:1.5px solid var(--cream-deep);border-radius:10px;padding:16px">
-            <label class="form-label" style="margin-bottom:10px">
-                <i class="fas fa-volume-mute" style="color:var(--gold)"></i> Default Muted
-            </label>
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:400">
-                <input type="checkbox" name="default_muted" value="1"
-                       <?= ($hero['default_muted'] ?? 1) ? 'checked' : '' ?>
-                       style="width:20px;height:20px;accent-color:var(--gold);cursor:pointer">
-                <div>
-                    <span style="font-size:0.88rem;font-weight:600;display:block">Start video muted</span>
-                    <span style="font-size:0.75rem;color:var(--text-light)">Required for browser autoplay</span>
-                </div>
-            </label>
-        </div>
-
         <div class="form-group" style="background:var(--cream);border:1.5px solid var(--cream-deep);border-radius:10px;padding:16px">
             <label class="form-label" style="margin-bottom:10px">
                 <i class="fas fa-volume-up" style="color:var(--gold)"></i> Sound Button
@@ -234,7 +215,6 @@ $has_video  = file_exists($video_path);
     </div>
 </div>
 
-<!-- Save -->
 <div style="display:flex;gap:14px;align-items:center;padding-bottom:20px;flex-wrap:wrap">
     <button type="submit" class="btn btn-primary" style="padding:12px 36px;font-size:1rem">
         <i class="fas fa-save"></i> Save Changes
