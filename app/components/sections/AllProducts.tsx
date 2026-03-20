@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import Image from 'next/image';
 import { ShoppingBag, CreditCard, SlidersHorizontal, ChevronDown, Check, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -60,7 +61,7 @@ function getSizeClass(category: string): string {
 
 const GRID_CLASS = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10 md:gap-x-8 md:gap-y-20";
 
-export default function Products() {
+function Products() {
   const router     = useRouter();
   const searchParams = useSearchParams();
 
@@ -391,5 +392,12 @@ export default function Products() {
       )}
 
     </section>
+  );
+}
+export default function AllProducts() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F9F6F1]" />}>
+      <Products />
+    </Suspense>
   );
 }
