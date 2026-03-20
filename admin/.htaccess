@@ -1,0 +1,11 @@
+Options -Indexes
+RewriteEngine On
+
+# .php extension hide karo - URL se .php hatao
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+# .php file serve karo bina extension ke
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ $1.php [L]
