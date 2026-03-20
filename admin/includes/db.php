@@ -1,17 +1,27 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'grayy');
-define('SITE_URL', 'http://localhost/gray');
+$isLocal = ($_SERVER['HTTP_HOST'] === 'localhost');
+
+if ($isLocal) {
+    define('DB_HOST', 'localhost');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+    define('DB_NAME', 'grayy');
+    define('SITE_URL', 'http://localhost/gray');
+    define('UPLOAD_URL', 'http://localhost/gray/admin/uploads/');
+} else {
+    define('DB_HOST', 'localhost');
+    define('DB_USER', 'gray_db');
+    define('DB_PASS', 'Ef~!Px_0Bp5-m7zL'); 
+    define('DB_NAME', 'gray_db');
+    define('SITE_URL', 'https://gray.ninjamarketing360.com/'); 
+    define('UPLOAD_URL', 'https://yourdomain.com/admin/uploads/');
+}
+
 define('ADMIN_URL', SITE_URL . '/admin');
-// Next.js public folder — D:\XAMPP\htdocs\gray\public\
 define('UPLOAD_PATH', dirname(dirname(__DIR__)) . '/public/');
 define('ADMIN_UPLOAD_PATH', dirname(__DIR__) . '/uploads/');
-// Admin uploads URL
-define('UPLOAD_URL', 'http://localhost/gray/admin/uploads/');
 
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if ($conn->connect_error) {
