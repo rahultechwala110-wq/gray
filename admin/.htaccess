@@ -1,4 +1,6 @@
 Options -Indexes
+Header set Access-Control-Allow-Origin "*"
+
 RewriteEngine On
 
 # .php extension hide karo - URL se .php hatao
