@@ -15,8 +15,9 @@ export async function GET() {
     const data = (rows as any[])[0] ?? null;
     if (!data) return NextResponse.json(null, { status: 404 });
 
+    const base = process.env.UPLOAD_URL || 'http://localhost/gray/admin/uploads';
     data.video_file = data.video_file
-      ? `http://localhost/gray/admin/uploads/hero-section/${data.video_file}`
+      ? `${base}/hero-section/${data.video_file}`
       : '';
 
     return NextResponse.json(data, { headers: { 'Cache-Control': 'no-store' } });

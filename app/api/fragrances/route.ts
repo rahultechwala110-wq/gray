@@ -1,4 +1,3 @@
-// app/api/fragrances/route.ts
 import { NextResponse } from 'next/server';
 import mysql from 'mysql2/promise';
 
@@ -20,11 +19,10 @@ export async function GET() {
 
     await conn.end();
 
+    const base = process.env.UPLOAD_URL || 'http://localhost/gray/admin/uploads';
     const mappedProducts = (products as any[]).map(p => ({
       ...p,
-      image: p.image
-        ? `http://localhost/gray/admin/uploads/products/${p.image}`
-        : '',
+      image: p.image ? `${base}/products/${p.image}` : '',
     }));
 
     return NextResponse.json({ categories, products: mappedProducts });

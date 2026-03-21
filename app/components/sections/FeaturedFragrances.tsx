@@ -25,27 +25,24 @@ interface Fragrance {
 }
 
 const fallbackCategories: Category[] = [
-  { name: 'man',      label: 'Man' },
-  { name: 'woman',    label: 'Woman' },
-  { name: 'Aroma Pod',label: 'Aroma Pod' },
+  { name: 'man',       label: 'Man' },
+  { name: 'woman',     label: 'Woman' },
+  { name: 'Aroma Pod', label: 'Aroma Pod' },
 ];
 
 const fallbackProducts: Fragrance[] = [
-  // Man
   { name: 'Brave',      type: 'Extrait De Parfum', category: 'man',       image: '/products/brave-men.jpg',        href: '/brave-mens-perfume-55ml',        price: 4200 },
   { name: 'Boss',       type: 'Extrait De Parfum', category: 'man',       image: '/products/boss-men.jpg',         href: '/boss-mens-perfume-55m',           price: 4500 },
   { name: 'Gentle',     type: 'Extrait De Parfum', category: 'man',       image: '/products/gentle-men.jpg',       href: '/gentle-mens-perfume-55ml',        price: 4200 },
   { name: 'Bold',       type: 'Extrait De Parfum', category: 'man',       image: '/products/bold-men.jpg',         href: '/gold-men-perfume-55ml',           price: 4800 },
   { name: 'Generous',   type: 'Extrait De Parfum', category: 'man',       image: '/products/generous.jpg',         href: '/generous-mens-perfume-55ml',      price: 4200 },
   { name: 'Groomed',    type: 'Extrait De Parfum', category: 'man',       image: '/products/groomed.jpg',          href: '/groomed-mens-perfume-55m',        price: 4200 },
-  // Woman
   { name: 'Bliss',      type: 'Extrait De Parfum', category: 'woman',     image: '/products/bliss-woman.jpg',      href: '/bliss-womens-perfume-55ml',       price: 3500 },
   { name: 'Gorgeous',   type: 'Extrait De Parfum', category: 'woman',     image: '/products/gorgeous-woman.jpg',   href: '/gorgeous-womens-perfume-55ml',    price: 3800 },
   { name: 'Braveheart', type: 'Extrait De Parfum', category: 'woman',     image: '/products/braveheart-woman.jpg', href: '/braveheart-womens-perfume-55ml',  price: 4200 },
   { name: 'Glorious',   type: 'Extrait De Parfum', category: 'woman',     image: '/products/glorious-woman.jpg',   href: '/glorious-womens-perfume-55ml',    price: 4200 },
   { name: 'Brilliance', type: 'Extrait De Parfum', category: 'woman',     image: '/products/brilliance-woman.jpg', href: '/brilliance-womens-perfume-55ml',  price: 3800 },
   { name: 'Gifted',     type: 'Extrait De Parfum', category: 'woman',     image: '/products/gifted-woman.jpg',     href: '/gifted-womens-perfume-55ml',      price: 4200 },
-  // Aroma Pod
   { name: 'B612',       type: 'Aroma Pod',          category: 'Aroma Pod', image: '/products/b612.jpg',             href: '/aroma-pod/b612',                  price: 2500 },
   { name: 'Bulge',      type: 'Aroma Pod',          category: 'Aroma Pod', image: '/products/bulge.jpg',            href: '/aroma-pod/bulge',                 price: 2500 },
   { name: 'Brahe',      type: 'Aroma Pod',          category: 'Aroma Pod', image: '/products/brahe.jpg',            href: '/aroma-pod/brahe',                 price: 2500 },
@@ -55,25 +52,22 @@ const fallbackProducts: Fragrance[] = [
 ];
 
 export default function FeaturedFragrances() {
-  const [categories, setCategories] = useState<Category[]>(fallbackCategories);
+  const [categories, setCategories]       = useState<Category[]>(fallbackCategories);
   const [allFragrances, setAllFragrances] = useState<Fragrance[]>(fallbackProducts);
   const [selectedCategory, setSelectedCategory] = useState<string>('man');
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  const [expandedId, setExpandedId]       = useState<string | null>(null);
+  const [quantities, setQuantities]       = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fragrances.php`)
-      .then(r => r.json())
-      .then(({ categories: cats, products }) => {
-        if (cats?.length) setCategories(cats);
-        if (products?.length) {
-          const mapped = products.map((p: Fragrance) => ({
-            ...p,
-            image: p.image || '',
-          }));
-          setAllFragrances(mapped);
-          setSelectedCategory(cats?.[0]?.name || 'man');
+    fetch('/api/fragrances', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then(res => {
+        if (!res) return;
+        if (res.categories?.length) setCategories(res.categories);
+        if (res.products?.length) {
+          setAllFragrances(res.products);
+          setSelectedCategory(res.categories?.[0]?.name || 'man');
         }
       })
       .catch(() => {});
@@ -113,13 +107,8 @@ export default function FeaturedFragrances() {
     }
   }, [selectedCategory, emblaApi]);
 
-  const stopAutoplay = useCallback(() => {
-    emblaApi?.plugins()?.autoplay?.stop();
-  }, [emblaApi]);
-
-  const playAutoplay = useCallback(() => {
-    emblaApi?.plugins()?.autoplay?.play();
-  }, [emblaApi]);
+  const stopAutoplay = useCallback(() => { emblaApi?.plugins()?.autoplay?.stop(); }, [emblaApi]);
+  const playAutoplay = useCallback(() => { emblaApi?.plugins()?.autoplay?.play(); }, [emblaApi]);
 
   const updateQty = (name: string, delta: number) => {
     setQuantities(prev => ({ ...prev, [name]: Math.max(1, (prev[name] || 1) + delta) }));
@@ -132,11 +121,8 @@ export default function FeaturedFragrances() {
     let cart = savedCart ? JSON.parse(savedCart) : [];
     const qty = quantities[product.name] || 1;
     const idx = cart.findIndex((i: any) => i.name === product.name);
-    if (idx !== -1) {
-      cart[idx].qty = Number(cart[idx].qty) + qty;
-    } else {
-      cart.push({ name: product.name, image: product.image, price: product.price || 4200, qty, category: 'Collection', size: '100ml EDP' });
-    }
+    if (idx !== -1) { cart[idx].qty = Number(cart[idx].qty) + qty; }
+    else { cart.push({ name: product.name, image: product.image, price: product.price || 4200, qty, category: 'Collection', size: '100ml EDP' }); }
     localStorage.setItem('cart', JSON.stringify(cart));
     window.dispatchEvent(new Event('cartUpdated'));
     window.dispatchEvent(new Event('storage'));
@@ -148,7 +134,6 @@ export default function FeaturedFragrances() {
     <section className="relative py-12 md:py-32 px-4 md:px-20 bg-[#F9F6F1] dark:bg-zinc-950 overflow-hidden">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-6 items-start">
 
-        {/* Sidebar */}
         <div className="w-full md:w-1/4 flex flex-col z-10 md:pt-16 h-full relative">
           <h3 className="text-[13px] tracking-[0.4em] uppercase text-gray-600 mb-4 font-semibold text-center md:text-left font-qlassy">
             Explore Categories
@@ -164,14 +149,12 @@ export default function FeaturedFragrances() {
                     }`}
                   >
                     {cat.label}
-                    <span 
-                      className={`h-[1.5px] bg-black mt-1 transition-all duration-500 absolute -bottom-1 
-                        ${selectedCategory === cat.name ? 'w-5' : 'w-0'}
-                        ${index === 0 ? 'left-0' : ''} 
-                        ${index === 1 ? 'left-1/2 -translate-x-1/2' : ''}
-                        ${index === 2 ? 'right-0' : ''}
-                      `} 
-                    />
+                    <span className={`h-[1.5px] bg-black mt-1 transition-all duration-500 absolute -bottom-1 
+                      ${selectedCategory === cat.name ? 'w-5' : 'w-0'}
+                      ${index === 0 ? 'left-0' : ''} 
+                      ${index === 1 ? 'left-1/2 -translate-x-1/2' : ''}
+                      ${index === 2 ? 'right-0' : ''}
+                    `} />
                   </button>
                 </li>
               ))}
@@ -179,7 +162,6 @@ export default function FeaturedFragrances() {
           </div>
         </div>
 
-        {/* Slider */}
         <div className="w-full md:w-3/4 relative group z-10">
           <div className="absolute top-[40%] -translate-y-1/2 left-0 right-0 z-40 pointer-events-none flex justify-center">
             <div className="w-full max-w-[290px] sm:max-w-[480px] md:max-w-[340px] lg:max-w-[420px] xl:max-w-[460px] flex justify-between items-center px-2">
@@ -204,7 +186,6 @@ export default function FeaturedFragrances() {
                         <Link href={item.href} className="block cursor-pointer">
                           <FragranceCard {...item} />
                         </Link>
-
                         <div className={`absolute bottom-4 right-0 flex items-center transition-all duration-500 ${isActive ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'}`}>
                           <div className="flex items-center gap-0 bg-white dark:bg-zinc-900 rounded-full shadow-xl border border-black/5 overflow-hidden">
                             <AnimatePresence>
