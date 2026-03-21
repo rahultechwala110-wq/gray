@@ -16,7 +16,7 @@ if ($isLocal) {
     define('DB_PASS', 'Ef~!Px_0Bp5-m7zL'); 
     define('DB_NAME', 'gray_db');
     define('SITE_URL', 'https://gray.ninjamarketing360.com/'); 
-    define('UPLOAD_URL', 'https://yourdomain.com/admin/uploads/');
+    define('UPLOAD_URL', 'https://gray.ninjamarketing360.com/admin/uploads/');
 }
 
 define('ADMIN_URL', SITE_URL . '/admin');
